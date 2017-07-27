@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Home</title>
+    <style>
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+a{
+    color:black;
+    text-decoration: none;
+}
+</style>
+</head>
+<body>
+
+    <p>hello {{user.name}}</p>
+
+    <form action="/log_out" method="POST">
+    {% csrf_token %}
+    <button type="submit" >Log Out</button>
+    </form> 
+
+    <form action="add_item" method="POST">
+    {% csrf_token %}
+    add wishlist item:<input type="text" name="item"><br>
+    <input type="submit" value="add item">
+    </form>
+
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        </div>
+
+    <h2>My Wishlist </h2>
+    <table>
+    
+    <tr>
+    <th>item</th>
+    <th>added by</th>
+    <th>date added</th>
+    <th>Delete</th>
+    </tr>
+
+    {%for item in items %}
+     
+     <tr>
+    <td><a href="/wishers/{{item.name}}">{{item.name}}</a></td>
+    <td>{{item.add_by.name}}</td>
+    <td>{{item.added_at}}</td>
+
+    <td>
+
+
+    <form action="/delete_item" method="POST">
+    {% csrf_token %}
+    <input type='hidden' name= "item_id" value="{{item.id}}">
+    <input type="submit" value="Delete item"> </td>
+    </form>
+    </tr>
+    {%endfor%}
+    <!-- Created list -->
+
+  
+    
+    <!-- <tr>
+    <th>item</th>
+    <th>added by</th>
+    <th>date added</th>
+    <th>Delete</th>
+    </tr> -->
+
+    <!--For every item that is in Favoriteslist where the owner IS the user add to MyWishList-->
+    {%for item in list %}
+    
+     
+     <tr>
+    <td><a href="/wishers/{{item.item.name}}">{{item.item.name}}</a></td>
+    <td>{{item.item.add_by.name}}</td>
+    <td>{{item.added_at}}</td>
+
+    <td>
+    
+
+    <form action="/remove_list_item" method="POST">
+    {% csrf_token %}
+    <input type='hidden' name= "item_id" value="{{item.id}}">
+    <input type="submit" value="Remove from list"> </td>
+    </form>
+    </tr>
+  
+    {%endfor%}
+    </table>
+
+
+
+
+
+
+
+
+    <!-- OTHERS LIST -->
+
+    <h2> Other's items </h2>
+<table>
+  <tr>
+    <th>Item</th>
+    <th>Added by </th>
+    <th>date added</th>
+    <th>add to wish</th>
+  </tr>
+ <tr>
+     
+     <!--For every item in Other-->
+     {%for item in not_items %}
+     {%if item.name not in exclude%}
+   
+    <td><a href="/wishers/{{item.name}}">{{item.name}}</a></td>
+    <td>{{item.add_by.name}}</td>
+    <td>{{item.added_at}}</td>
+
+    <td>
+
+
+    <form action="/add_to_wish" method="POST">
+    {% csrf_token %}
+    <input type='hidden' name= "item_id" value="{{item.id}}">
+    <input type="submit" value="add to wishlist"> </td>
+    </form>
+    
+    
+    
+  </tr>
+    {%endif%}
+    {%endfor%}
+    
+</table>
+
+</body>
+</html>
